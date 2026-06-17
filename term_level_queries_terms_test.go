@@ -23,6 +23,21 @@ func TestQueryTerms_Valid(t *testing.T) {
 			err:   true,
 			want:  "value is required",
 		},
+		{
+			name:  "empty value list",
+			query: NewTermsQuery("tags").SetValue(),
+			err:   true,
+			want:  "value is required",
+		},
+		{
+			name: "missing lookup index",
+			query: NewTermsQuery("tags").SetLookup(TermsLookup{
+				ID:   "2",
+				Path: "tags",
+			}),
+			err:  true,
+			want: "lookup index is required",
+		},
 	}
 
 	TestValid(t, tests)
@@ -47,6 +62,26 @@ func TestQueryTerms_Map(t *testing.T) {
 				"terms": map[string]any{
 					"category": []any{"books", "ebooks"},
 					"boost":    1.5,
+				},
+			},
+			err: false,
+		},
+		{
+			name: "with terms lookup",
+			query: NewTermsQuery("color").SetLookup(TermsLookup{
+				Index:   "my-index-000001",
+				ID:      "2",
+				Path:    "color",
+				Routing: "user-1",
+			}),
+			want: map[string]any{
+				"terms": map[string]any{
+					"color": map[string]any{
+						"index":   "my-index-000001",
+						"id":      "2",
+						"path":    "color",
+						"routing": "user-1",
+					},
 				},
 			},
 			err: false,

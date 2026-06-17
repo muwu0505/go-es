@@ -42,26 +42,26 @@ func (q *TermLevelQueriesRegexp) Map() (map[string]any, error) {
 		return nil, err
 	}
 
-	_map := map[string]any{
+	regexp := map[string]any{
 		"value": q.value,
 	}
 
 	if q.flags != "" {
-		_map["flags"] = q.flags
+		regexp["flags"] = q.flags
 	}
 	if q.caseInsensitive != nil {
-		_map["case_insensitive"] = *q.caseInsensitive
+		regexp["case_insensitive"] = *q.caseInsensitive
 	}
 	if q.maxDeterminizedStates != nil {
-		_map["max_determinized_states"] = *q.maxDeterminizedStates
+		regexp["max_determinized_states"] = *q.maxDeterminizedStates
 	}
 	if q.rewrite != "" {
-		_map["rewrite"] = q.rewrite
+		regexp["rewrite"] = q.rewrite
 	}
 
 	m := map[string]any{
 		"regexp": map[string]any{
-			q.field: _map,
+			q.field: regexp,
 		},
 	}
 

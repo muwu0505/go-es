@@ -112,6 +112,7 @@ func (s *TermLevelQueriesIDs) AddValues(v ...string) *TermLevelQueriesIDs {
 	}
 	return s
 }
+
 // NewTermLevelQueriesPrefix
 func NewTermLevelQueriesPrefix(field string) *TermLevelQueriesPrefix {
 	s := &TermLevelQueriesPrefix{}
@@ -382,12 +383,64 @@ func (s *TermLevelQueriesTerms) AddValue(v ...any) *TermLevelQueriesTerms {
 	}
 	return s
 }
+
+// SetLookup
+func (s *TermLevelQueriesTerms) SetLookup(v TermsLookup) *TermLevelQueriesTerms {
+	if s == nil {
+		return s
+	}
+	s.lookup = &v
+	return s
+}
+
 // SetBoost
 func (s *TermLevelQueriesTerms) SetBoost(v float64) *TermLevelQueriesTerms {
 	if s == nil {
 		return s
 	}
 	s.boost = &v
+	return s
+}
+
+// NewTermsLookup
+func NewTermsLookup() *TermsLookup {
+	s := &TermsLookup{}
+	return s
+}
+
+// SetIndex
+func (s *TermsLookup) SetIndex(v string) *TermsLookup {
+	if s == nil {
+		return s
+	}
+	s.Index = v
+	return s
+}
+
+// SetID
+func (s *TermsLookup) SetID(v string) *TermsLookup {
+	if s == nil {
+		return s
+	}
+	s.ID = v
+	return s
+}
+
+// SetPath
+func (s *TermsLookup) SetPath(v string) *TermsLookup {
+	if s == nil {
+		return s
+	}
+	s.Path = v
+	return s
+}
+
+// SetRouting
+func (s *TermsLookup) SetRouting(v string) *TermsLookup {
+	if s == nil {
+		return s
+	}
+	s.Routing = v
 	return s
 }
 
@@ -426,12 +479,13 @@ func (s *TermLevelQueriesTermsSet) AddTerms(v ...any) *TermLevelQueriesTermsSet 
 	}
 	return s
 }
+
 // SetMinimumShouldMatch
-func (s *TermLevelQueriesTermsSet) SetMinimumShouldMatch(v float64) *TermLevelQueriesTermsSet {
+func (s *TermLevelQueriesTermsSet) SetMinimumShouldMatch(v any) *TermLevelQueriesTermsSet {
 	if s == nil {
 		return s
 	}
-	s.minimumShouldMatch = &v
+	s.minimumShouldMatch = v
 	return s
 }
 
@@ -450,6 +504,15 @@ func (s *TermLevelQueriesTermsSet) SetMinimumShouldMatchScript(v Script) *TermLe
 		return s
 	}
 	s.minimumShouldMatchScript = &v
+	return s
+}
+
+// SetBoost
+func (s *TermLevelQueriesTermsSet) SetBoost(v float64) *TermLevelQueriesTermsSet {
+	if s == nil {
+		return s
+	}
+	s.boost = &v
 	return s
 }
 
@@ -475,6 +538,15 @@ func (s *TermLevelQueriesWildcard) SetValue(v string) *TermLevelQueriesWildcard 
 		return s
 	}
 	s.value = v
+	return s
+}
+
+// SetWildcard
+func (s *TermLevelQueriesWildcard) SetWildcard(v string) *TermLevelQueriesWildcard {
+	if s == nil {
+		return s
+	}
+	s.wildcard = v
 	return s
 }
 
@@ -504,4 +576,3 @@ func (s *TermLevelQueriesWildcard) SetRewrite(v string) *TermLevelQueriesWildcar
 	s.rewrite = v
 	return s
 }
-

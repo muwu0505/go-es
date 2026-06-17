@@ -43,29 +43,29 @@ func (q *TermLevelQueriesFuzzy) Map() (map[string]any, error) {
 		return nil, err
 	}
 
-	_map := map[string]any{
+	fuzzy := map[string]any{
 		"value": q.value,
 	}
 
 	if q.fuzziness != "" {
-		_map["fuzziness"] = q.fuzziness
+		fuzzy["fuzziness"] = q.fuzziness
 	}
 	if q.maxExpansions != nil {
-		_map["max_expansions"] = *q.maxExpansions
+		fuzzy["max_expansions"] = *q.maxExpansions
 	}
 	if q.prefixLength != nil {
-		_map["prefix_length"] = *q.prefixLength
+		fuzzy["prefix_length"] = *q.prefixLength
 	}
 	if q.transpositions != nil {
-		_map["transpositions"] = *q.transpositions
+		fuzzy["transpositions"] = *q.transpositions
 	}
 	if q.rewrite != "" {
-		_map["rewrite"] = q.rewrite
+		fuzzy["rewrite"] = q.rewrite
 	}
 
 	m := map[string]any{
 		"fuzzy": map[string]any{
-			q.field: _map,
+			q.field: fuzzy,
 		},
 	}
 

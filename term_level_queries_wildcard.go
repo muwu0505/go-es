@@ -11,6 +11,7 @@ import (
 type TermLevelQueriesWildcard struct {
 	field           string
 	value           string
+	wildcard        string
 	boost           *float64
 	caseInsensitive *bool
 	rewrite         string
@@ -28,7 +29,7 @@ func (q *TermLevelQueriesWildcard) Valid() error {
 	if q.field == "" {
 		return errors.New("field is required")
 	}
-	if q.value == "" {
+	if q.value == "" && q.wildcard == "" {
 		return errors.New("value is required")
 	}
 
@@ -41,23 +42,26 @@ func (q *TermLevelQueriesWildcard) Map() (map[string]any, error) {
 		return nil, err
 	}
 
-	_map := map[string]any{
-		"value": q.value,
+	wildcard := map[string]any{}
+	if q.wildcard != "" {
+		wildcard["wildcard"] = q.wildcard
+	} else {
+		wildcard["value"] = q.value
 	}
 
 	if q.boost != nil {
-		_map["boost"] = *q.boost
+		wildcard["boost"] = *q.boost
 	}
 	if q.caseInsensitive != nil {
-		_map["case_insensitive"] = *q.caseInsensitive
+		wildcard["case_insensitive"] = *q.caseInsensitive
 	}
 	if q.rewrite != "" {
-		_map["rewrite"] = q.rewrite
+		wildcard["rewrite"] = q.rewrite
 	}
 
 	m := map[string]any{
 		"wildcard": map[string]any{
-			q.field: _map,
+			q.field: wildcard,
 		},
 	}
 

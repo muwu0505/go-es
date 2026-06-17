@@ -48,36 +48,36 @@ func (q *TermLevelQueriesRange) Map() (map[string]any, error) {
 		return nil, err
 	}
 
-	_map := make(map[string]any)
+	rangeQuery := make(map[string]any)
 
 	if q.gt != nil {
-		_map["gt"] = q.gt
+		rangeQuery["gt"] = q.gt
 	}
 	if q.gte != nil {
-		_map["gte"] = q.gte
+		rangeQuery["gte"] = q.gte
 	}
 	if q.lt != nil {
-		_map["lt"] = q.lt
+		rangeQuery["lt"] = q.lt
 	}
 	if q.lte != nil {
-		_map["lte"] = q.lte
+		rangeQuery["lte"] = q.lte
 	}
 	if q.format != "" {
-		_map["format"] = q.format
+		rangeQuery["format"] = q.format
 	}
 	if q.relation != "" {
-		_map["relation"] = q.relation
+		rangeQuery["relation"] = q.relation
 	}
 	if q.timeZone != "" {
-		_map["time_zone"] = q.timeZone
+		rangeQuery["time_zone"] = q.timeZone
 	}
 	if q.boost != nil {
-		_map["boost"] = *q.boost
+		rangeQuery["boost"] = *q.boost
 	}
 
 	m := map[string]any{
 		"range": map[string]any{
-			q.field: _map,
+			q.field: rangeQuery,
 		},
 	}
 

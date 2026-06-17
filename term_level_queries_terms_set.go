@@ -5,15 +5,16 @@ import (
 )
 
 /*
-	doc: https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-terms-query
+	doc: https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-terms-set-query
 */
 
 type TermLevelQueriesTermsSet struct {
 	field                    string
 	terms                    []any
-	minimumShouldMatch       *float64
+	minimumShouldMatch       any
 	minimumShouldMatchField  string
 	minimumShouldMatchScript *Script
+	boost                    *float64
 }
 
 func NewTermsSetQuery(field string) *TermLevelQueriesTermsSet {
@@ -28,8 +29,24 @@ func (q *TermLevelQueriesTermsSet) Valid() error {
 	if q.field == "" {
 		return errors.New("field is required")
 	}
-	if q.terms == nil {
+	if len(q.terms) == 0 {
 		return errors.New("terms is required")
+	}
+	minimumShouldMatchOptions := 0
+	if q.minimumShouldMatch != nil {
+		minimumShouldMatchOptions++
+	}
+	if q.minimumShouldMatchField != "" {
+		minimumShouldMatchOptions++
+	}
+	if q.minimumShouldMatchScript != nil {
+		minimumShouldMatchOptions++
+	}
+	if minimumShouldMatchOptions == 0 {
+		return errors.New("minimum_should_match is required")
+	}
+	if minimumShouldMatchOptions > 1 {
+		return errors.New("only one minimum_should_match option is allowed")
 	}
 
 	return nil
@@ -41,26 +58,29 @@ func (q *TermLevelQueriesTermsSet) Map() (map[string]any, error) {
 		return nil, err
 	}
 
-	_map := map[string]any{
+	termsSet := map[string]any{
 		"terms": q.terms,
 	}
 
 	if q.minimumShouldMatch != nil {
-		_map["minimum_should_match"] = *q.minimumShouldMatch
+		termsSet["minimum_should_match"] = q.minimumShouldMatch
 	}
 	if q.minimumShouldMatchField != "" {
-		_map["minimum_should_match_field"] = q.minimumShouldMatchField
+		termsSet["minimum_should_match_field"] = q.minimumShouldMatchField
 	}
 	if q.minimumShouldMatchScript != nil {
-		_map["minimum_should_match_script"], err = q.minimumShouldMatchScript.Map()
+		termsSet["minimum_should_match_script"], err = q.minimumShouldMatchScript.Map()
 		if err != nil {
 			return nil, err
 		}
 	}
+	if q.boost != nil {
+		termsSet["boost"] = *q.boost
+	}
 
 	m := map[string]any{
 		"terms_set": map[string]any{
-			q.field: _map,
+			q.field: termsSet,
 		},
 	}
 

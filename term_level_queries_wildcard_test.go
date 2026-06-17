@@ -44,12 +44,14 @@ func TestQueryWildcard_Map(t *testing.T) {
 		},
 		{
 			name:  "with boost",
-			query: NewWildcardQuery("tags").SetValue("search").SetBoost(1.5),
+			query: NewWildcardQuery("tags").SetWildcard("search*").SetBoost(1.5).SetCaseInsensitive(true).SetRewrite(QueriesRewriteParameterConstantScoreBlended),
 			want: map[string]any{
 				"wildcard": map[string]any{
 					"tags": map[string]any{
-						"value": "search",
-						"boost": 1.5,
+						"wildcard":         "search*",
+						"boost":            1.5,
+						"case_insensitive": true,
+						"rewrite":          QueriesRewriteParameterConstantScoreBlended,
 					},
 				},
 			},

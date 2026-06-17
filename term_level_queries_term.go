@@ -40,20 +40,20 @@ func (q *TermLevelQueriesTerm) Map() (map[string]any, error) {
 		return nil, err
 	}
 
-	_map := map[string]any{
+	term := map[string]any{
 		"value": q.value,
 	}
 
 	if q.boost != nil {
-		_map["boost"] = *q.boost
+		term["boost"] = *q.boost
 	}
 	if q.caseInsensitive != nil {
-		_map["case_insensitive"] = *q.caseInsensitive
+		term["case_insensitive"] = *q.caseInsensitive
 	}
 
 	m := map[string]any{
 		"term": map[string]any{
-			q.field: _map,
+			q.field: term,
 		},
 	}
 

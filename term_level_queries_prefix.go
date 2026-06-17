@@ -40,20 +40,20 @@ func (q *TermLevelQueriesPrefix) Map() (map[string]any, error) {
 		return nil, err
 	}
 
-	_map := map[string]any{
+	prefix := map[string]any{
 		"value": q.value,
 	}
 
 	if q.rewrite != "" {
-		_map["rewrite"] = q.rewrite
+		prefix["rewrite"] = q.rewrite
 	}
 	if q.caseInsensitive != nil {
-		_map["case_insensitive"] = *q.caseInsensitive
+		prefix["case_insensitive"] = *q.caseInsensitive
 	}
 
 	m := map[string]any{
 		"prefix": map[string]any{
-			q.field: _map,
+			q.field: prefix,
 		},
 	}
 

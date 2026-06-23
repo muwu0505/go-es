@@ -36,7 +36,7 @@ func (q *TermLevelQueriesRegexp) Valid() error {
 	return nil
 }
 
-func (q *TermLevelQueriesRegexp) Map() (map[string]any, error) {
+func (q *TermLevelQueriesRegexp) ToMap() (map[string]any, error) {
 	err := q.Valid()
 	if err != nil {
 		return nil, err
@@ -68,6 +68,6 @@ func (q *TermLevelQueriesRegexp) Map() (map[string]any, error) {
 	return m, nil
 }
 
-func (q *TermLevelQueriesRegexp) Source() (string, error) {
-	return Source(q)
+func (q *TermLevelQueriesRegexp) MarshalJson() (string, error) {
+	return MarshalJson(q)
 }

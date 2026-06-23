@@ -499,11 +499,11 @@ func (s *TermLevelQueriesTermsSet) SetMinimumShouldMatchField(v string) *TermLev
 }
 
 // SetMinimumShouldMatchScript
-func (s *TermLevelQueriesTermsSet) SetMinimumShouldMatchScript(v Script) *TermLevelQueriesTermsSet {
+func (s *TermLevelQueriesTermsSet) SetMinimumShouldMatchScript(v *Script) *TermLevelQueriesTermsSet {
 	if s == nil {
 		return s
 	}
-	s.minimumShouldMatchScript = &v
+	s.minimumShouldMatchScript = v
 	return s
 }
 

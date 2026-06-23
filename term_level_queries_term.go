@@ -34,7 +34,7 @@ func (q *TermLevelQueriesTerm) Valid() error {
 	return nil
 }
 
-func (q *TermLevelQueriesTerm) Map() (map[string]any, error) {
+func (q *TermLevelQueriesTerm) ToMap() (map[string]any, error) {
 	err := q.Valid()
 	if err != nil {
 		return nil, err
@@ -60,6 +60,6 @@ func (q *TermLevelQueriesTerm) Map() (map[string]any, error) {
 	return m, nil
 }
 
-func (q *TermLevelQueriesTerm) Source() (string, error) {
-	return Source(q)
+func (q *TermLevelQueriesTerm) MarshalJson() (string, error) {
+	return MarshalJson(q)
 }

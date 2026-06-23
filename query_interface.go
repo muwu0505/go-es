@@ -6,12 +6,12 @@ import (
 
 type IQuery interface {
 	Valid() error
-	Map() (map[string]any, error)
-	Source() (string, error)
+	ToMap() (map[string]any, error)
+	MarshalJson() (string, error)
 }
 
-func Source(q IQuery) (string, error) {
-	_map, err := q.Map()
+func MarshalJson(q IQuery) (string, error) {
+	_map, err := q.ToMap()
 	if err != nil {
 		return "", err
 	}

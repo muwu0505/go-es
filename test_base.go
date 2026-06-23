@@ -41,7 +41,7 @@ func TestMap(t *testing.T, tests []*TestBase) {
 				q = query.query
 			}
 
-			_map, err := q.Map()
+			_map, err := q.ToMap()
 			switch query.err {
 			case true:
 				assert.Error(t, err)

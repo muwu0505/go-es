@@ -37,7 +37,7 @@ func (q *TermLevelQueriesFuzzy) Valid() error {
 	return nil
 }
 
-func (q *TermLevelQueriesFuzzy) Map() (map[string]any, error) {
+func (q *TermLevelQueriesFuzzy) ToMap() (map[string]any, error) {
 	err := q.Valid()
 	if err != nil {
 		return nil, err
@@ -72,6 +72,6 @@ func (q *TermLevelQueriesFuzzy) Map() (map[string]any, error) {
 	return m, nil
 }
 
-func (q *TermLevelQueriesFuzzy) Source() (string, error) {
-	return Source(q)
+func (q *TermLevelQueriesFuzzy) MarshalJson() (string, error) {
+	return MarshalJson(q)
 }

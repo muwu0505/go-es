@@ -52,7 +52,7 @@ func (q *TermLevelQueriesTermsSet) Valid() error {
 	return nil
 }
 
-func (q *TermLevelQueriesTermsSet) Map() (map[string]any, error) {
+func (q *TermLevelQueriesTermsSet) ToMap() (map[string]any, error) {
 	err := q.Valid()
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func (q *TermLevelQueriesTermsSet) Map() (map[string]any, error) {
 		termsSet["minimum_should_match_field"] = q.minimumShouldMatchField
 	}
 	if q.minimumShouldMatchScript != nil {
-		termsSet["minimum_should_match_script"], err = q.minimumShouldMatchScript.Map()
+		termsSet["minimum_should_match_script"], err = q.minimumShouldMatchScript.ToMap()
 		if err != nil {
 			return nil, err
 		}
@@ -87,6 +87,6 @@ func (q *TermLevelQueriesTermsSet) Map() (map[string]any, error) {
 	return m, nil
 }
 
-func (q *TermLevelQueriesTermsSet) Source() (string, error) {
-	return Source(q)
+func (q *TermLevelQueriesTermsSet) MarshalJson() (string, error) {
+	return MarshalJson(q)
 }

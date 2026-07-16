@@ -1,6 +1,7 @@
 package goesdsl
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -33,24 +34,24 @@ func TestValid(t *testing.T, tests []*TestBase) {
 	}
 }
 
-func TestMap(t *testing.T, tests []*TestBase) {
+func TestJson(t *testing.T, tests []*TestBase) {
 	for _, query := range tests {
 		t.Run(query.name, func(t *testing.T) {
+			if query.err {
+				t.Fatalf("TestJson only accepts success cases; move %q to TestValid", query.name)
+			}
+
 			var q IQuery
 			if query.query != nil {
 				q = query.query
 			}
 
-			_map, err := q.ToMap()
-			switch query.err {
-			case true:
-				assert.Error(t, err)
-				assert.Nil(t, _map)
-				assert.Equal(t, query.want.(string), err.Error())
-			case false:
-				assert.NoError(t, err)
-				assert.Equal(t, query.want, _map)
-			}
+			got, err := q.MarshalJson()
+			assert.NoError(t, err)
+
+			want, err := json.Marshal(query.want)
+			assert.NoError(t, err)
+			assert.JSONEq(t, string(want), got)
 		})
 	}
 }

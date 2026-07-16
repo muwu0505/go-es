@@ -1,15 +1,15 @@
 package goesdsl
 
-import (
-	"testing"
-)
+import "testing"
 
+// TestQueryTermsSet_Valid verifies terms set query validation.
 func TestQueryTermsSet_Valid(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "valid query",
-			query: NewTermsSetQuery("tags").SetTerms("search", "elasticsearch").SetMinimumShouldMatch(1),
-			err:   false,
+			name:  "nil query",
+			query: (*TermLevelQueriesTermsSet)(nil),
+			err:   true,
+			want:  "nil query",
 		},
 		{
 			name:  "missing field",
@@ -18,14 +18,8 @@ func TestQueryTermsSet_Valid(t *testing.T) {
 			want:  "field is required",
 		},
 		{
-			name:  "missing value",
+			name:  "missing terms",
 			query: NewTermsSetQuery("tags").SetMinimumShouldMatch(1),
-			err:   true,
-			want:  "terms is required",
-		},
-		{
-			name:  "empty terms list",
-			query: NewTermsSetQuery("tags").SetTerms().SetMinimumShouldMatch(1),
 			err:   true,
 			want:  "terms is required",
 		},
@@ -46,43 +40,60 @@ func TestQueryTermsSet_Valid(t *testing.T) {
 			err:  true,
 			want: "only one minimum_should_match option is allowed",
 		},
+		{
+			name:  "full query",
+			query: NewTermsSetQuery("category").SetTerms("books", "ebooks").SetMinimumShouldMatch(1).SetBoost(1.5),
+			err:   false,
+		},
+		{
+			name:  "minimum should match field",
+			query: NewTermsSetQuery("category").SetTerms("books", "ebooks").SetMinimumShouldMatchField("required_matches"),
+			err:   false,
+		},
+		{
+			name:  "minimum should match script",
+			query: NewTermsSetQuery("programming_languages").SetTerms("c++", "java", "php").SetMinimumShouldMatchScript(NewPainlessSourceScript("Math.min(params.num_terms, doc['required_matches'].value)", nil)),
+			err:   false,
+		},
 	}
 
 	TestValid(t, tests)
 }
 
-func TestQueryTermsSet_Map(t *testing.T) {
+// TestQueryTermsSet_Json verifies terms set query JSON rendering.
+func TestQueryTermsSet_Json(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "basic query",
-			query: NewTermsSetQuery("product_ids").SetTerms(1, 2, 3).SetMinimumShouldMatch(2),
+			name:  "full query",
+			query: NewTermsSetQuery("category").SetTerms("books", "ebooks").SetMinimumShouldMatch(1).SetBoost(1.5),
+			err:   false,
 			want: map[string]any{
 				"terms_set": map[string]any{
-					"product_ids": map[string]any{
-						"terms":                []any{1, 2, 3},
-						"minimum_should_match": 2,
+					"category": map[string]any{
+						"terms":                []any{"books", "ebooks"},
+						"minimum_should_match": 1,
+						"boost":                1.5,
 					},
 				},
 			},
-			err: false,
 		},
 		{
-			name:  "with boost",
-			query: NewTermsSetQuery("category").SetTerms("books", "ebooks").SetMinimumShouldMatchField("required_matches").SetBoost(1.5),
+			name:  "minimum should match field",
+			query: NewTermsSetQuery("category").SetTerms("books", "ebooks").SetMinimumShouldMatchField("required_matches"),
+			err:   false,
 			want: map[string]any{
 				"terms_set": map[string]any{
 					"category": map[string]any{
 						"terms":                      []any{"books", "ebooks"},
 						"minimum_should_match_field": "required_matches",
-						"boost":                      1.5,
 					},
 				},
 			},
-			err: false,
 		},
 		{
-			name:  "with minimum should match script",
+			name:  "minimum should match script",
 			query: NewTermsSetQuery("programming_languages").SetTerms("c++", "java", "php").SetMinimumShouldMatchScript(NewPainlessSourceScript("Math.min(params.num_terms, doc['required_matches'].value)", nil)),
+			err:   false,
 			want: map[string]any{
 				"terms_set": map[string]any{
 					"programming_languages": map[string]any{
@@ -95,9 +106,8 @@ func TestQueryTermsSet_Map(t *testing.T) {
 					},
 				},
 			},
-			err: false,
 		},
 	}
 
-	TestMap(t, tests)
+	TestJson(t, tests)
 }

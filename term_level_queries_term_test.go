@@ -1,16 +1,15 @@
 package goesdsl
 
-import (
-	"testing"
-)
+import "testing"
 
+// TestQueryTerm_Valid verifies term query validation.
 func TestQueryTerm_Valid(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "valid query",
-			query: NewTermQuery("status").SetValue("active"),
-			err:   false,
-			want:  nil,
+			name:  "nil query",
+			query: (*TermLevelQueriesTerm)(nil),
+			err:   true,
+			want:  "nil query",
 		},
 		{
 			name:  "missing field",
@@ -24,28 +23,23 @@ func TestQueryTerm_Valid(t *testing.T) {
 			err:   true,
 			want:  "value is required",
 		},
+		{
+			name:  "full query",
+			query: NewTermQuery("role").SetValue("Admin").SetBoost(2.0).SetCaseInsensitive(true),
+			err:   false,
+		},
 	}
 
 	TestValid(t, tests)
 }
 
-func TestQueryTerm_Map(t *testing.T) {
+// TestQueryTerm_Json verifies term query JSON rendering.
+func TestQueryTerm_Json(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "basic query",
-			query: NewTermQuery("status.keyword").SetValue("published"),
-			want: map[string]any{
-				"term": map[string]any{
-					"status.keyword": map[string]any{
-						"value": "published",
-					},
-				},
-			},
-			err: false,
-		},
-		{
-			name:  "with boost and case_insensitive",
+			name:  "full query",
 			query: NewTermQuery("role").SetValue("Admin").SetBoost(2.0).SetCaseInsensitive(true),
+			err:   false,
 			want: map[string]any{
 				"term": map[string]any{
 					"role": map[string]any{
@@ -55,9 +49,8 @@ func TestQueryTerm_Map(t *testing.T) {
 					},
 				},
 			},
-			err: false,
 		},
 	}
 
-	TestMap(t, tests)
+	TestJson(t, tests)
 }

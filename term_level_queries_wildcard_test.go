@@ -1,15 +1,15 @@
 package goesdsl
 
-import (
-	"testing"
-)
+import "testing"
 
+// TestQueryWildcard_Valid verifies wildcard query validation.
 func TestQueryWildcard_Valid(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "valid query",
-			query: NewWildcardQuery("tags").SetValue("search"),
-			err:   false,
+			name:  "nil query",
+			query: (*TermLevelQueriesWildcard)(nil),
+			err:   true,
+			want:  "nil query",
 		},
 		{
 			name:  "missing field",
@@ -18,33 +18,28 @@ func TestQueryWildcard_Valid(t *testing.T) {
 			want:  "field is required",
 		},
 		{
-			name:  "nil value",
+			name:  "missing value",
 			query: NewWildcardQuery("tags"),
 			err:   true,
 			want:  "value is required",
+		},
+		{
+			name:  "full query",
+			query: NewWildcardQuery("tags").SetWildcard("search*").SetBoost(1.5).SetCaseInsensitive(true).SetRewrite(QueriesRewriteParameterConstantScoreBlended),
+			err:   false,
 		},
 	}
 
 	TestValid(t, tests)
 }
 
-func TestQueryWildcard_Map(t *testing.T) {
+// TestQueryWildcard_Json verifies wildcard query JSON rendering.
+func TestQueryWildcard_Json(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "basic query",
-			query: NewWildcardQuery("tags").SetValue("search"),
-			want: map[string]any{
-				"wildcard": map[string]any{
-					"tags": map[string]any{
-						"value": "search",
-					},
-				},
-			},
-			err: false,
-		},
-		{
-			name:  "with boost",
+			name:  "full query",
 			query: NewWildcardQuery("tags").SetWildcard("search*").SetBoost(1.5).SetCaseInsensitive(true).SetRewrite(QueriesRewriteParameterConstantScoreBlended),
+			err:   false,
 			want: map[string]any{
 				"wildcard": map[string]any{
 					"tags": map[string]any{
@@ -55,9 +50,8 @@ func TestQueryWildcard_Map(t *testing.T) {
 					},
 				},
 			},
-			err: false,
 		},
 	}
 
-	TestMap(t, tests)
+	TestJson(t, tests)
 }

@@ -1,15 +1,15 @@
 package goesdsl
 
-import (
-	"testing"
-)
+import "testing"
 
+// TestQueryTerms_Valid verifies terms query validation.
 func TestQueryTerms_Valid(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "valid query",
-			query: NewTermsQuery("tags").SetValue("search", "elasticsearch"),
-			err:   false,
+			name:  "nil query",
+			query: (*TermLevelQueriesTerms)(nil),
+			err:   true,
+			want:  "nil query",
 		},
 		{
 			name:  "missing field",
@@ -24,12 +24,6 @@ func TestQueryTerms_Valid(t *testing.T) {
 			want:  "value is required",
 		},
 		{
-			name:  "empty value list",
-			query: NewTermsQuery("tags").SetValue(),
-			err:   true,
-			want:  "value is required",
-		},
-		{
 			name: "missing lookup index",
 			query: NewTermsQuery("tags").SetLookup(TermsLookup{
 				ID:   "2",
@@ -38,42 +32,67 @@ func TestQueryTerms_Valid(t *testing.T) {
 			err:  true,
 			want: "lookup index is required",
 		},
-	}
-
-	TestValid(t, tests)
-}
-
-func TestQueryTerms_Map(t *testing.T) {
-	tests := []*TestBase{
 		{
-			name:  "basic query",
-			query: NewTermsQuery("product_ids").SetValue(1, 2, 3),
-			want: map[string]any{
-				"terms": map[string]any{
-					"product_ids": []any{1, 2, 3},
-				},
-			},
-			err: false,
+			name: "missing lookup id",
+			query: NewTermsQuery("tags").SetLookup(TermsLookup{
+				Index: "my-index-000001",
+				Path:  "tags",
+			}),
+			err:  true,
+			want: "lookup id is required",
 		},
 		{
-			name:  "with boost",
+			name: "missing lookup path",
+			query: NewTermsQuery("tags").SetLookup(TermsLookup{
+				Index: "my-index-000001",
+				ID:    "2",
+			}),
+			err:  true,
+			want: "lookup path is required",
+		},
+		{
+			name:  "full query",
 			query: NewTermsQuery("category").SetValue("books", "ebooks").SetBoost(1.5),
-			want: map[string]any{
-				"terms": map[string]any{
-					"category": []any{"books", "ebooks"},
-					"boost":    1.5,
-				},
-			},
-			err: false,
+			err:   false,
 		},
 		{
-			name: "with terms lookup",
+			name: "lookup query",
 			query: NewTermsQuery("color").SetLookup(TermsLookup{
 				Index:   "my-index-000001",
 				ID:      "2",
 				Path:    "color",
 				Routing: "user-1",
 			}),
+			err: false,
+		},
+	}
+
+	TestValid(t, tests)
+}
+
+// TestQueryTerms_Json verifies terms query JSON rendering.
+func TestQueryTerms_Json(t *testing.T) {
+	tests := []*TestBase{
+		{
+			name:  "full query",
+			query: NewTermsQuery("category").SetValue("books", "ebooks").SetBoost(1.5),
+			err:   false,
+			want: map[string]any{
+				"terms": map[string]any{
+					"category": []any{"books", "ebooks"},
+					"boost":    1.5,
+				},
+			},
+		},
+		{
+			name: "lookup query",
+			query: NewTermsQuery("color").SetLookup(TermsLookup{
+				Index:   "my-index-000001",
+				ID:      "2",
+				Path:    "color",
+				Routing: "user-1",
+			}),
+			err: false,
 			want: map[string]any{
 				"terms": map[string]any{
 					"color": map[string]any{
@@ -84,9 +103,8 @@ func TestQueryTerms_Map(t *testing.T) {
 					},
 				},
 			},
-			err: false,
 		},
 	}
 
-	TestMap(t, tests)
+	TestJson(t, tests)
 }

@@ -1,16 +1,15 @@
 package goesdsl
 
-import (
-	"testing"
-)
+import "testing"
 
+// TestQueryFuzzy_Valid verifies fuzzy query validation.
 func TestQueryFuzzy_Valid(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "valid query",
-			query: NewFuzzyQuery("title").SetValue("elastic"),
-			err:   false,
-			want:  nil,
+			name:  "nil query",
+			query: (*TermLevelQueriesFuzzy)(nil),
+			err:   true,
+			want:  "nil query",
 		},
 		{
 			name:  "missing field",
@@ -24,43 +23,39 @@ func TestQueryFuzzy_Valid(t *testing.T) {
 			err:   true,
 			want:  "value is required",
 		},
+		{
+			name: "full query",
+			query: NewFuzzyQuery("name").SetValue("john").SetFuzziness(QueriesFuzzinessAuto).
+				SetMaxExpansions(100).SetPrefixLength(2).SetTranspositions(true).SetRewrite(QueriesRewriteParameterConstantScore),
+			err: false,
+		},
 	}
 
 	TestValid(t, tests)
 }
 
-func TestQueryFuzzy_Map(t *testing.T) {
+// TestQueryFuzzy_Json verifies fuzzy query JSON rendering.
+func TestQueryFuzzy_Json(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "basic query",
-			query: NewFuzzyQuery("content").SetValue("golang"),
-			err:   false,
-			want: map[string]any{
-				"fuzzy": map[string]any{
-					"content": map[string]any{
-						"value": "golang",
-					},
-				},
-			},
-		},
-		{
-			name:  "full options",
-			query: NewFuzzyQuery("name").SetValue("john").SetFuzziness("AUTO").SetMaxExpansions(100).SetPrefixLength(2).SetTranspositions(true).SetRewrite(QueriesRewriteParameterConstantScore),
-			err:   false,
+			name: "full query",
+			query: NewFuzzyQuery("name").SetValue("john").SetFuzziness(QueriesFuzzinessAuto).
+				SetMaxExpansions(100).SetPrefixLength(2).SetTranspositions(true).SetRewrite(QueriesRewriteParameterConstantScore),
+			err: false,
 			want: map[string]any{
 				"fuzzy": map[string]any{
 					"name": map[string]any{
 						"value":          "john",
-						"fuzziness":      "AUTO",
+						"fuzziness":      QueriesFuzzinessAuto,
 						"max_expansions": int32(100),
 						"prefix_length":  int32(2),
 						"transpositions": true,
-						"rewrite":        "constant_score",
+						"rewrite":        QueriesRewriteParameterConstantScore,
 					},
 				},
 			},
 		},
 	}
 
-	TestMap(t, tests)
+	TestJson(t, tests)
 }

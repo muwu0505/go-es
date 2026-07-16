@@ -1,15 +1,15 @@
 package goesdsl
 
-import (
-	"testing"
-)
+import "testing"
 
+// TestQueryPrefix_Valid verifies prefix query validation.
 func TestQueryPrefix_Valid(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "valid query",
-			query: NewPrefixQuery("name").SetValue("john"),
-			err:   false,
+			name:  "nil query",
+			query: (*TermLevelQueriesPrefix)(nil),
+			err:   true,
+			want:  "nil query",
 		},
 		{
 			name:  "missing field",
@@ -28,35 +28,24 @@ func TestQueryPrefix_Valid(t *testing.T) {
 	TestValid(t, tests)
 }
 
-func TestQueryPrefix_Map(t *testing.T) {
+// TestQueryPrefix_Json verifies prefix query JSON rendering.
+func TestQueryPrefix_Json(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "basic query",
-			query: NewPrefixQuery("product.code").SetValue("XJ"),
-			want: map[string]any{
-				"prefix": map[string]any{
-					"product.code": map[string]any{
-						"value": "XJ",
-					},
-				},
-			},
-			err: false,
-		},
-		{
-			name:  "full options",
+			name:  "full query",
 			query: NewPrefixQuery("title").SetValue("elastic").SetRewrite(QueriesRewriteParameterScoringBoolean).SetCaseInsensitive(true),
+			err:   false,
 			want: map[string]any{
 				"prefix": map[string]any{
 					"title": map[string]any{
 						"value":            "elastic",
-						"rewrite":          "scoring_boolean",
+						"rewrite":          QueriesRewriteParameterScoringBoolean,
 						"case_insensitive": true,
 					},
 				},
 			},
-			err: false,
 		},
 	}
 
-	TestMap(t, tests)
+	TestJson(t, tests)
 }

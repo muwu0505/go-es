@@ -1,15 +1,15 @@
 package goesdsl
 
-import (
-	"testing"
-)
+import "testing"
 
+// TestQueryRegexp_Valid verifies regexp query validation.
 func TestQueryRegexp_Valid(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "valid query",
-			query: NewRegexpQuery("name").SetValue("k.*y"),
-			err:   false,
+			name:  "nil query",
+			query: (*TermLevelQueriesRegexp)(nil),
+			err:   true,
+			want:  "nil query",
 		},
 		{
 			name:  "missing field",
@@ -23,28 +23,23 @@ func TestQueryRegexp_Valid(t *testing.T) {
 			err:   true,
 			want:  "value is required",
 		},
+		{
+			name:  "full query",
+			query: NewRegexpQuery("title").SetValue("elasti.*").SetFlags(QueriesFlagsAll).SetCaseInsensitive(true).SetMaxDeterminizedStates(20000).SetRewrite(QueriesRewriteParameterConstantScoreBlended),
+			err:   false,
+		},
 	}
 
 	TestValid(t, tests)
 }
 
-func TestQueryRegexp_Map(t *testing.T) {
+// TestQueryRegexp_Json verifies regexp query JSON rendering.
+func TestQueryRegexp_Json(t *testing.T) {
 	tests := []*TestBase{
 		{
-			name:  "basic query",
-			query: NewRegexpQuery("product.code").SetValue("X[0-9]+"),
-			want: map[string]any{
-				"regexp": map[string]any{
-					"product.code": map[string]any{
-						"value": "X[0-9]+",
-					},
-				},
-			},
-			err: false,
-		},
-		{
-			name:  "full options",
+			name:  "full query",
 			query: NewRegexpQuery("title").SetValue("elasti.*").SetFlags(QueriesFlagsAll).SetCaseInsensitive(true).SetMaxDeterminizedStates(20000).SetRewrite(QueriesRewriteParameterConstantScoreBlended),
+			err:   false,
 			want: map[string]any{
 				"regexp": map[string]any{
 					"title": map[string]any{
@@ -56,9 +51,8 @@ func TestQueryRegexp_Map(t *testing.T) {
 					},
 				},
 			},
-			err: false,
 		},
 	}
 
-	TestMap(t, tests)
+	TestJson(t, tests)
 }

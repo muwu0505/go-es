@@ -59,13 +59,11 @@ func (q *TermLevelQueriesWildcard) ToMap() (map[string]any, error) {
 		wildcard["rewrite"] = q.rewrite
 	}
 
-	m := map[string]any{
+	return map[string]any{
 		"wildcard": map[string]any{
 			q.field: wildcard,
 		},
-	}
-
-	return m, nil
+	}, nil
 }
 
 func (q *TermLevelQueriesWildcard) MarshalJson() (string, error) {

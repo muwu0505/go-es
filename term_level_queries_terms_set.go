@@ -78,13 +78,11 @@ func (q *TermLevelQueriesTermsSet) ToMap() (map[string]any, error) {
 		termsSet["boost"] = *q.boost
 	}
 
-	m := map[string]any{
+	return map[string]any{
 		"terms_set": map[string]any{
 			q.field: termsSet,
 		},
-	}
-
-	return m, nil
+	}, nil
 }
 
 func (q *TermLevelQueriesTermsSet) MarshalJson() (string, error) {

@@ -34,13 +34,11 @@ func (q *TermLevelQueriesExist) ToMap() (map[string]any, error) {
 		return nil, err
 	}
 
-	m := map[string]any{
+	return map[string]any{
 		"exists": map[string]any{
 			"field": q.field,
 		},
-	}
-
-	return m, nil
+	}, nil
 }
 
 func (q *TermLevelQueriesExist) MarshalJson() (string, error) {

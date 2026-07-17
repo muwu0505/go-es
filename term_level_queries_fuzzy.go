@@ -63,13 +63,11 @@ func (q *TermLevelQueriesFuzzy) ToMap() (map[string]any, error) {
 		fuzzy["rewrite"] = q.rewrite
 	}
 
-	m := map[string]any{
+	return map[string]any{
 		"fuzzy": map[string]any{
 			q.field: fuzzy,
 		},
-	}
-
-	return m, nil
+	}, nil
 }
 
 func (q *TermLevelQueriesFuzzy) MarshalJson() (string, error) {

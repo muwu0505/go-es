@@ -75,13 +75,11 @@ func (q *TermLevelQueriesRange) ToMap() (map[string]any, error) {
 		rangeQuery["boost"] = *q.boost
 	}
 
-	m := map[string]any{
+	return map[string]any{
 		"range": map[string]any{
 			q.field: rangeQuery,
 		},
-	}
-
-	return m, nil
+	}, nil
 }
 
 func (q *TermLevelQueriesRange) MarshalJson() (string, error) {

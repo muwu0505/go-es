@@ -59,13 +59,11 @@ func (q *TermLevelQueriesRegexp) ToMap() (map[string]any, error) {
 		regexp["rewrite"] = q.rewrite
 	}
 
-	m := map[string]any{
+	return map[string]any{
 		"regexp": map[string]any{
 			q.field: regexp,
 		},
-	}
-
-	return m, nil
+	}, nil
 }
 
 func (q *TermLevelQueriesRegexp) MarshalJson() (string, error) {

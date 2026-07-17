@@ -34,13 +34,11 @@ func (q *TermLevelQueriesIDs) ToMap() (map[string]any, error) {
 		return nil, err
 	}
 
-	m := map[string]any{
+	return map[string]any{
 		"ids": map[string]any{
 			"values": q.values,
 		},
-	}
-
-	return m, nil
+	}, nil
 }
 
 func (q *TermLevelQueriesIDs) MarshalJson() (string, error) {

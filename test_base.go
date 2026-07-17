@@ -25,7 +25,9 @@ func TestValid(t *testing.T, tests []*TestBase) {
 			err := q.Valid()
 			switch query.err {
 			case true:
-				assert.Error(t, err)
+				if !assert.Error(t, err) {
+					return
+				}
 				assert.Equal(t, query.want, err.Error())
 			case false:
 				assert.NoError(t, err)

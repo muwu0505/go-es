@@ -51,13 +51,11 @@ func (q *TermLevelQueriesPrefix) ToMap() (map[string]any, error) {
 		prefix["case_insensitive"] = *q.caseInsensitive
 	}
 
-	m := map[string]any{
+	return map[string]any{
 		"prefix": map[string]any{
 			q.field: prefix,
 		},
-	}
-
-	return m, nil
+	}, nil
 }
 
 func (q *TermLevelQueriesPrefix) MarshalJson() (string, error) {
